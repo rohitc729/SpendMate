@@ -130,7 +130,7 @@ fun DashBoardScreen(
                                 placeHolder = "Searches for transaction",
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(44.dp),
+                                    .height(48.dp),
                                 containerColor = Color.White,
                                 shape = RoundedCornerShape(12.dp),
                                 leadingIcon = {
@@ -182,7 +182,10 @@ fun DashBoardScreen(
                         }
                     }else{
                         IconButton(
-                            onClick = {searchMode=false}
+                            onClick = {
+                                searchMode=false
+                                searchText=""
+                            }
                         ) {
                             Icon(imageVector = Icons.Default.Cancel, contentDescription = "cancel search")
                         }
