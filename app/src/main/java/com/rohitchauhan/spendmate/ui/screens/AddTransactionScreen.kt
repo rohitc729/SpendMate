@@ -57,6 +57,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rohitchauhan.spendmate.components.MyTextField
 import com.rohitchauhan.spendmate.domain.model.TransactionModel
 import com.rohitchauhan.spendmate.domain.model.TransactionType
+import com.rohitchauhan.spendmate.ui.theme.alata_reguler
+import com.rohitchauhan.spendmate.ui.theme.appColor
 import com.rohitchauhan.spendmate.ui.viewModels.AddTransactionScreenVM
 import com.rohitchauhan.spendmate.utils.defaultCategories
 import java.text.SimpleDateFormat
@@ -129,7 +131,7 @@ fun AddTransactionScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(), topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Add Expense", fontWeight = FontWeight.Bold) },
+                title = { Text("Add Expense", fontWeight = FontWeight.Bold, fontFamily = alata_reguler) },
                 navigationIcon = {
                     IconButton(
                         onClick = onBackPress
@@ -170,7 +172,8 @@ fun AddTransactionScreen(
                         "Expense",
                         color = if (isExpense) Color.White else Color(0xff757575),
                         fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp
+                        fontSize = 15.sp,
+                        fontFamily = alata_reguler
                     )
                 }
                 Box(
@@ -184,7 +187,8 @@ fun AddTransactionScreen(
                         "Income",
                         color = if (!isExpense) Color.White else Color(0xff757575),
                         fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp
+                        fontSize = 15.sp,
+                        fontFamily = alata_reguler
                     )
                 }
             }
@@ -198,7 +202,7 @@ fun AddTransactionScreen(
                     .padding(horizontal = 20.dp, vertical = 16.dp)
             ) {
                 Column {
-                    Text("Amount", fontSize = 12.sp, color = Color.Gray)
+                    Text("Amount", fontSize = 12.sp, color = Color.Gray, fontFamily = alata_reguler)
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -208,7 +212,8 @@ fun AddTransactionScreen(
                             fontWeight = FontWeight.Bold,
                             color = if (transactionType == TransactionType.Expense) Color(0xffff5252) else Color(
                                 0xff4cac50
-                            )
+                            ),
+                            fontFamily = alata_reguler
                         )
                         MyTextField(
                             value = amountText,
@@ -233,7 +238,8 @@ fun AddTransactionScreen(
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Color(0xff2d3142),
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        modifier = Modifier.padding(bottom = 8.dp),
+                        fontFamily = alata_reguler
                     )
                     FlowRow(
                         modifier = Modifier.fillMaxWidth(),
@@ -258,7 +264,7 @@ fun AddTransactionScreen(
                                         .border(
                                             BorderStroke(
                                                 if (isSelected) 2.dp else 1.dp,
-                                                if (isSelected) MaterialTheme.colorScheme.primary else Color.White
+                                                if (isSelected) appColor else Color.White
                                             ),
                                             RoundedCornerShape(20.dp)
                                         )
@@ -269,12 +275,13 @@ fun AddTransactionScreen(
                                         .padding(horizontal = 14.dp, vertical = 8.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(categoryItem.emoji, fontSize = 16.sp)
+                                Text(categoryItem.emoji, fontSize = 16.sp, fontFamily = alata_reguler)
                                 Text(
                                     categoryItem.name,
                                     fontSize = 13.sp,
                                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                    color = Color(0xff2d3142)
+                                    color = Color(0xff2d3142),
+                                    fontFamily = alata_reguler
                                 )
                             }
                         }
@@ -289,7 +296,8 @@ fun AddTransactionScreen(
                         "Details",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xff2d3142)
+                        color = Color(0xff2d3142),
+                        fontFamily = alata_reguler
                     )
                     MyTextField(
                         value = noteText.value,
@@ -342,24 +350,26 @@ fun AddTransactionScreen(
                         Icon(
                             imageVector = Icons.Default.CalendarToday,
                             contentDescription = "Date",
-                            tint = MaterialTheme.colorScheme.primary,
+                            tint = appColor,
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(Modifier.width(10.dp))
-                        Text("Date:", fontSize = 13.sp, color = Color.Gray)
+                        Text("Date:", fontSize = 13.sp, color = Color.Gray, fontFamily = alata_reguler)
                         Spacer(Modifier.width(6.dp))
                         Text(
                             text = dateFormatter.format(selectedDateInMillis),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xff2d3142)
+                            color = Color(0xff2d3142),
+                            fontFamily = alata_reguler
                         )
                     }
                     Text(
                         "Change",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
+                        color = appColor,
+                        fontFamily = alata_reguler
                     )
                 }
                 Spacer(Modifier.height(24.dp))
@@ -411,7 +421,8 @@ fun AddTransactionScreen(
                         text = if (transactionId == 0) "Save Transaction" else "Update Transaction",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = Color.White,
+                        fontFamily = alata_reguler
                     )
                 }
                 Spacer(Modifier.height(16.dp))

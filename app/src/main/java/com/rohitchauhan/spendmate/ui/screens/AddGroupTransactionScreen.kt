@@ -53,6 +53,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rohitchauhan.spendmate.components.MyTextField
 import com.rohitchauhan.spendmate.domain.model.GroupTransactionModel
 import com.rohitchauhan.spendmate.domain.model.TransactionType
+import com.rohitchauhan.spendmate.ui.theme.alata_reguler
+import com.rohitchauhan.spendmate.ui.theme.appColor
 import com.rohitchauhan.spendmate.ui.viewModels.GroupTransactionScreenVM
 import com.rohitchauhan.spendmate.utils.defaultCategories
 import java.text.SimpleDateFormat
@@ -117,7 +119,7 @@ fun AddGroupTransactionScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Add Group_Expense") },
+                title = { Text("Add Group Expense", fontFamily = alata_reguler) },
                 navigationIcon = {
                     IconButton(
                         onClick = {
@@ -140,6 +142,7 @@ fun AddGroupTransactionScreen(
                 .verticalScroll(rememberScrollState())
                 .imePadding()
         ) {
+            Spacer(Modifier.height(4.dp))
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -149,7 +152,7 @@ fun AddGroupTransactionScreen(
                     .border(BorderStroke(1.5.dp, Color.White), RoundedCornerShape(24.dp))
                     .padding(horizontal = 20.dp, vertical = 16.dp)
             ) {
-                Text(text = "Amound", fontSize = 13.sp, color = Color.Gray)
+                Text(text = "Amound", fontSize = 13.sp, color = Color.Gray, fontFamily = alata_reguler)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         "₹",
@@ -157,7 +160,8 @@ fun AddGroupTransactionScreen(
                         fontWeight = FontWeight.Bold,
                         color = if (transactionType == TransactionType.Expense) Color(0xffff5252) else Color(
                             0xff4cac50
-                        )
+                        ),
+                        fontFamily = alata_reguler
                     )
                     MyTextField(
                         value = amountText,
@@ -196,7 +200,7 @@ fun AddGroupTransactionScreen(
                                 .border(
                                     BorderStroke(
                                         if (isSelected) 2.dp else 1.dp,
-                                        if (isSelected) MaterialTheme.colorScheme.primary else Color.White
+                                        if (isSelected) appColor else Color.White
                                     ),
                                     RoundedCornerShape(20.dp)
                                 )
@@ -206,12 +210,13 @@ fun AddGroupTransactionScreen(
                                 .padding(horizontal = 14.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(categoryItem.emoji, fontSize = 16.sp)
+                        Text(categoryItem.emoji, fontSize = 16.sp, fontFamily = alata_reguler)
                         Text(
                             categoryItem.name,
                             fontSize = 13.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                            color = Color(0xff2d3142)
+                            color = Color(0xff2d3142),
+                            fontFamily = alata_reguler
                         )
                     }
                 }
@@ -273,24 +278,26 @@ fun AddGroupTransactionScreen(
                     Icon(
                         imageVector = Icons.Default.CalendarToday,
                         contentDescription = "Date",
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = appColor,
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(Modifier.width(10.dp))
-                    Text("Date:", fontSize = 13.sp, color = Color.Gray)
+                    Text("Date:", fontSize = 13.sp, color = Color.Gray, fontFamily = alata_reguler)
                     Spacer(Modifier.width(6.dp))
                     Text(
                         text = dateFormatter.format(selectedDateInMillis),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color(0xff2d3142)
+                        color = Color(0xff2d3142),
+                        fontFamily = alata_reguler
                     )
                 }
                 Text(
                     "Change",
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
+                    color = appColor,
+                    fontFamily = alata_reguler
                 )
             }
             Spacer(Modifier.height(20.dp
@@ -333,7 +340,7 @@ fun AddGroupTransactionScreen(
                     tint = Color.White
                 )
                 Spacer(Modifier.width(8.dp))
-                Text("Save transaction", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text("Save transaction", fontSize = 16.sp, fontWeight = FontWeight.Bold, fontFamily = alata_reguler)
             }
         }
     }

@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rohitchauhan.spendmate.ui.theme.alata_reguler
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,9 +41,10 @@ fun MyTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     isError: Boolean = false,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    fontFamily: FontFamily = FontFamily.Default,
-    errorMessage: String=""
-) {
+    fontFamily: FontFamily = alata_reguler,
+    errorMessage: String="",
+
+    ) {
     Column {
         BasicTextField(
             value = value,

@@ -9,17 +9,23 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowLeft
+import androidx.compose.material.icons.filled.ArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -31,17 +37,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.node.InteroperableComposeUiNode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.rohitchauhan.spendmate.components.EmptyBox
 import com.rohitchauhan.spendmate.components.TransactionCard
 import com.rohitchauhan.spendmate.ui.navigation.Routs
+import com.rohitchauhan.spendmate.ui.theme.alata_reguler
 import com.rohitchauhan.spendmate.ui.viewModels.DashBoardScreenVM
 import com.rohitchauhan.spendmate.utils.ExpenseCategoryItem
 import com.rohitchauhan.spendmate.utils.TransactionUiModel
@@ -72,16 +83,20 @@ fun AllTransactionsScreen(viewModel: DashBoardScreenVM, rootNavController: NavHo
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Box {
-                    Text(selectedMonth.plus("▼"), modifier = Modifier.clickable {
-                        showMonthDropDownMenu = true
-                    })
+                    Row {
+                        Text(selectedMonth, modifier = Modifier.clickable {
+                            showMonthDropDownMenu = true
+                        }, fontFamily = alata_reguler)
+                        Spacer(Modifier.width(4.dp))
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowLeft,"", modifier = Modifier.rotate(-90f))
+                    }
                     DropdownMenu(
                         expanded = showMonthDropDownMenu,
                         onDismissRequest = { showMonthDropDownMenu = false },
                     ) {
                         listOf("this month", "last month", "this year", "last year").forEach {
                             DropdownMenuItem(
-                                text = { Text(it) },
+                                text = { Text(it, fontFamily = alata_reguler) },
                                 onClick = {
                                     showMonthDropDownMenu = false
                                     viewModel.onMonthChangedForSummary(it)
@@ -129,14 +144,24 @@ fun AllTransactionsScreen(viewModel: DashBoardScreenVM, rootNavController: NavHo
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Box {
-                Text(
-                    text = "$selectedCategory▼",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold,
+                Row (
                     modifier = Modifier.clickable {
                         isFilterMenuVisible = true
                     }
-                )
+                ){
+                    Text(
+                        text = selectedCategory,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = alata_reguler
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Icon(
+                        imageVector = Icons.Default.ArrowLeft,
+                        contentDescription = "arrow",
+                        modifier = Modifier.rotate(-90f)
+                    )
+                }
                 DropdownMenu(
                     expanded = isFilterMenuVisible,
                     onDismissRequest = { isFilterMenuVisible = false },
@@ -147,11 +172,11 @@ fun AllTransactionsScreen(viewModel: DashBoardScreenVM, rootNavController: NavHo
                         ExpenseCategoryItem(
                             name = "All transactions",
                             emoji = "",
-                            color = Color.Transparent
+                            color = Color.Transparent,
                         )
                     ).forEach {
                         DropdownMenuItem(
-                            text = { Text(it.name) },
+                            text = { Text(it.name, fontFamily = alata_reguler) },
                             onClick = {
                                 viewModel.onFilterValueChanged(it)
                                 selectedCategory = it.name
@@ -161,18 +186,21 @@ fun AllTransactionsScreen(viewModel: DashBoardScreenVM, rootNavController: NavHo
                     }
                 }
             }
-            Text(
-                text = "\uD83D\uDCDD Summary",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.clickable {
-                    summaryBottomShitVisible = true
-                }
-            )
+            Row (verticalAlignment = Alignment.CenterVertically){
+                Text("\uD83D\uDCDD")
+                Text(
+                    text = "Summary",
+                    modifier = Modifier.clickable {
+                        summaryBottomShitVisible = true
+                    },
+                    fontFamily = alata_reguler,
+                    textDecoration = TextDecoration.Underline
+                )
+            }
         }
         val loadState = items.loadState
-        when{
-            loadState.refresh is LoadState.Loading && items.itemCount == 0 -> {
+        when (loadState.refresh) {
+            is LoadState.Loading if items.itemCount == 0 -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -180,24 +208,27 @@ fun AllTransactionsScreen(viewModel: DashBoardScreenVM, rootNavController: NavHo
                     CircularProgressIndicator()
                 }
             }
-            loadState.refresh is LoadState.Error && items.itemCount == 0 -> {
+
+            is LoadState.Error if items.itemCount == 0 -> {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text("Failed to load transactions")
+                    Text("Failed to load transactions", fontFamily = alata_reguler)
 
                     Button(onClick = { items.retry() }) {
-                        Text("Retry")
+                        Text("Retry", fontFamily = alata_reguler)
                     }
                 }
             }
-            loadState.refresh is LoadState.NotLoading&& items.itemCount == 0 -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-                    Text("No Transactions", fontSize = 20.sp)
+
+            is LoadState.NotLoading if items.itemCount == 0 -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    EmptyBox()
                 }
             }
+
             else -> {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
@@ -220,7 +251,8 @@ fun AllTransactionsScreen(viewModel: DashBoardScreenVM, rootNavController: NavHo
                                 Text(
                                     text = uiModel.dateString,
                                     fontSize = 13.sp,
-                                    color=Color.Gray
+                                    color = Color.Gray,
+                                    fontFamily = alata_reguler
                                 )
                             }
 
@@ -239,9 +271,13 @@ fun AllTransactionsScreen(viewModel: DashBoardScreenVM, rootNavController: NavHo
                                     }
                                 )
                             }
+
                             null -> {
-                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-                                    Text("No Transactions", fontSize = 20.sp)
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    EmptyBox()
                                 }
                             }
                         }

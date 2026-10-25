@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rohitchauhan.spendmate.domain.model.TransactionModel
 import com.rohitchauhan.spendmate.domain.model.TransactionType
+import com.rohitchauhan.spendmate.ui.theme.alata_reguler
 import com.rohitchauhan.spendmate.utils.formatDateHeader
 
 @Composable
@@ -74,19 +75,21 @@ fun TransactionCard(
                 transaction.personName.ifEmpty { transaction.title.ifEmpty { transaction.category } },
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                fontFamily = alata_reguler
             )
             Row(verticalAlignment = Alignment.CenterVertically){
-            Text(transaction.category, fontSize = 12.sp, color = Color.Gray)
+            Text(transaction.category, fontSize = 12.sp, color = Color.Gray, fontFamily = alata_reguler)
                 VerticalDivider(thickness = 1.dp, modifier = Modifier.height(16.dp).padding(horizontal = 4.dp))
-                Text(formattedDate, fontSize = 12.sp, color = Color.Gray)
+                Text(formattedDate, fontSize = 12.sp, color = Color.Gray, fontFamily = alata_reguler)
             }
         }
         Text(
             text = if (isIncome) "+${transaction.amount}" else "-${transaction.amount}",
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            color = if (isIncome) Color(0xff4caf50) else Color(0xffff5252)
+            color = if (isIncome) Color(0xff4caf50) else Color(0xffff5252),
+            fontFamily = alata_reguler
         )
         Box {
             IconButton(
@@ -103,7 +106,7 @@ fun TransactionCard(
                 containerColor = Color.White
             ) {
                 DropdownMenuItem(
-                    text = { Text("Delete") },
+                    text = { Text("Delete", fontFamily = alata_reguler) },
                     onClick = {
                         onDeleteMenuClick()
                     }

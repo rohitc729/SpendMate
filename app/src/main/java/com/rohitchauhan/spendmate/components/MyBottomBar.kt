@@ -36,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.room.util.getColumnIndexOrThrow
 import com.rohitchauhan.spendmate.R
+import com.rohitchauhan.spendmate.ui.theme.alata_reguler
+import com.rohitchauhan.spendmate.ui.theme.appColor
 import com.rohitchauhan.spendmate.utils.BottomTab
 
 @Composable
@@ -57,7 +59,7 @@ fun MyBottomBar(
 //                .shadow(12.dp, shape = RoundedCornerShape(24.dp))
                 .height(80.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.primary,
+                    color = appColor,
                     shape = RoundedCornerShape(topEnd = 24.dp, topStart = 24.dp)
                 )
 //                .border(
@@ -97,7 +99,8 @@ fun MyBottomBar(
                             tab.title,
                             fontSize = 12.sp,
                             color = if (currentTabIndex == index) MaterialTheme.colorScheme.primary else Color.Black,
-                            modifier = Modifier.padding(start = 8.dp)
+                            modifier = Modifier.padding(start = 8.dp),
+                            fontFamily = alata_reguler
                         )
                     }
                 }

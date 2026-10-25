@@ -22,8 +22,10 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
+import com.rohitchauhan.spendmate.components.EmptyBox
 import com.rohitchauhan.spendmate.components.TransactionCard
 import com.rohitchauhan.spendmate.ui.navigation.Routs
+import com.rohitchauhan.spendmate.ui.theme.alata_reguler
 import com.rohitchauhan.spendmate.ui.viewModels.PersonScreenVM
 
 @Composable
@@ -50,16 +52,16 @@ fun PersonScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text("Failed to load transactions")
+                Text("Failed to load transactions", fontFamily = alata_reguler)
 
                 Button(onClick = { transactions.retry() }) {
-                    Text("Retry")
+                    Text("Retry", fontFamily = alata_reguler)
                 }
             }
         }
         loadState.refresh is LoadState.NotLoading&& transactions.itemCount == 0 -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-                Text("No Transactions", fontSize = 20.sp)
+               EmptyBox()
             }
         }
         else->{
@@ -89,7 +91,7 @@ fun PersonScreen(
                         )
                     }else{
                         Box(modifier=Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-                            Text(text = "No Transactions", fontSize = 20.sp)
+                            EmptyBox()
                         }
                     }
                 }

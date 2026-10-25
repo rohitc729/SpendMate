@@ -48,6 +48,8 @@ import com.rohitchauhan.spendmate.ui.navigation.Routs
 import com.rohitchauhan.spendmate.ui.screens.subscreens.AllTransactionsScreen
 import com.rohitchauhan.spendmate.ui.screens.subscreens.GroupTransactionsScreen
 import com.rohitchauhan.spendmate.ui.screens.subscreens.PersonScreen
+import com.rohitchauhan.spendmate.ui.theme.alata_reguler
+import com.rohitchauhan.spendmate.ui.theme.appColor
 import com.rohitchauhan.spendmate.ui.viewModels.DashBoardScreenVM
 import com.rohitchauhan.spendmate.ui.viewModels.GroupTransactionScreenVM
 import com.rohitchauhan.spendmate.ui.viewModels.PersonScreenVM
@@ -128,16 +130,16 @@ fun DashBoardScreen(
                                 placeHolder = "Searches for transaction",
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(48.dp),
+                                    .height(44.dp),
                                 containerColor = Color.White,
-                                shape = RoundedCornerShape(24.dp),
+                                shape = RoundedCornerShape(12.dp),
                                 leadingIcon = {
                                     Icon(Icons.Default.Search, contentDescription =null)
                                 }
                             )
                         }
                     }else {
-                        Text("Expense tracker")
+                        Text("Expense tracker", fontFamily = alata_reguler)
                     }
                 },
                 actions = {
@@ -204,9 +206,9 @@ fun DashBoardScreen(
 
                 },
                 shape = CircleShape,
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = appColor
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "add transaction icon")
+                Icon(imageVector = Icons.Default.Add, contentDescription = "add transaction icon", tint = Color.White)
             }
         },
     ) { paddingValues ->

@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rohitchauhan.spendmate.domain.model.GroupTransactionModel
 import com.rohitchauhan.spendmate.domain.model.TransactionType
+import com.rohitchauhan.spendmate.ui.theme.alata_reguler
 import com.rohitchauhan.spendmate.utils.formatDateHeader
 import kotlinx.serialization.json.internal.decodeToSequenceByReader
 import kotlin.text.ifEmpty
@@ -64,7 +65,7 @@ fun TransactionCard2(
                 .background(color = Color(0xffff5252).copy(alpha = .15f)),
             contentAlignment = Alignment.Center
         ) {
-            Text(transaction.icon, fontSize = 24.sp)
+            Text(transaction.icon, fontSize = 24.sp, fontFamily = alata_reguler)
         }
         Column(
             modifier = Modifier
@@ -76,24 +77,26 @@ fun TransactionCard2(
                     transaction.title.ifEmpty { transaction.category },
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    fontFamily = alata_reguler
                 )
-                Text("${transaction.personCount}/", fontSize =13.sp, color=Color.Gray, modifier = Modifier.padding(start = 10.dp))
-                Text(transaction.perPersonAmount.toString(), fontSize =13.sp, color=Color.Gray)
+                Text("${transaction.personCount}/", fontSize =13.sp, color=Color.Gray, modifier = Modifier.padding(start = 10.dp), fontFamily = alata_reguler)
+                Text(transaction.perPersonAmount.toString(), fontSize =13.sp, color=Color.Gray, fontFamily = alata_reguler)
             }
             Row(verticalAlignment = Alignment.CenterVertically){
-                Text(transaction.category, fontSize = 12.sp, color = Color.Gray)
+                Text(transaction.category, fontSize = 12.sp, color = Color.Gray, fontFamily = alata_reguler)
                 VerticalDivider(thickness = 1.dp, modifier = Modifier
                     .height(16.dp)
                     .padding(horizontal = 4.dp))
-                Text(formattedDate, fontSize = 12.sp, color = Color.Gray)
+                Text(formattedDate, fontSize = 12.sp, color = Color.Gray, fontFamily = alata_reguler)
             }
         }
         Text(
             text = if (isIncome) "+${transaction.amount}" else "-${transaction.amount}",
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            color = if (isIncome) Color(0xff4caf50) else Color(0xffff5252)
+            color = if (isIncome) Color(0xff4caf50) else Color(0xffff5252),
+            fontFamily = alata_reguler
         )
         Box {
             IconButton(
@@ -110,7 +113,7 @@ fun TransactionCard2(
                 containerColor = Color.White
             ) {
                 DropdownMenuItem(
-                    text = { Text("Delete") },
+                    text = { Text("Delete", fontFamily = alata_reguler) },
                     onClick = {
                         onDeleteMenuClick()
                     }
