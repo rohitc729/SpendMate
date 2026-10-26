@@ -91,7 +91,7 @@ fun SettingScreen(
                     UploadedMessage(viewModel)
                 }
             }else{
-                NotLoggedInMessage(viewModel)
+                NotLoggedInMessage(viewModel,context)
             }
         }
     }
@@ -167,7 +167,7 @@ fun NotUploadedMessage(viewModel: SettingScreenVM,context: Context) {
 }
 
 @Composable
-fun NotLoggedInMessage(viewModel: SettingScreenVM) {
+fun NotLoggedInMessage(viewModel: SettingScreenVM,context:Context) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ){

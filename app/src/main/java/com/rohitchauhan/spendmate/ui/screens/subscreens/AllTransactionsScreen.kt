@@ -245,7 +245,7 @@ fun AllTransactionsScreen(viewModel: DashBoardScreenVM, rootNavController: NavHo
                                 null -> "placeholder_$index"
                             }
                         }
-                    ) { index ->
+                    ) {  index ->
                         when (val uiModel = items[index]) {
                             is TransactionUiModel.Header -> {
                                 Text(

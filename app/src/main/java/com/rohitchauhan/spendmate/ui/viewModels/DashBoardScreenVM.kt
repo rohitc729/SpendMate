@@ -85,7 +85,7 @@ class DashBoardScreenVM @Inject constructor(
                 }
             }
     }.map { pagingData ->
-        pagingData.map { transaction ->
+        pagingData.map {     transaction ->
             TransactionUiModel.TransactionItem(transaction) as TransactionUiModel
         }.insertSeparators { before: TransactionUiModel?, after: TransactionUiModel? ->
             val beforeItem = (before as? TransactionUiModel.TransactionItem)?.transaction

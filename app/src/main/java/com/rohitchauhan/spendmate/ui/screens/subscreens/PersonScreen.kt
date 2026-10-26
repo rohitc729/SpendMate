@@ -27,6 +27,7 @@ import com.rohitchauhan.spendmate.components.TransactionCard
 import com.rohitchauhan.spendmate.ui.navigation.Routs
 import com.rohitchauhan.spendmate.ui.theme.alata_reguler
 import com.rohitchauhan.spendmate.ui.viewModels.PersonScreenVM
+import com.rohitchauhan.spendmate.utils.TransactionUiModel
 
 @Composable
 fun PersonScreen(
@@ -76,25 +77,40 @@ fun PersonScreen(
             {
                 items(
                     count = transactions.itemCount,
-                    key = transactions.itemKey(),
-                    contentType = transactions.itemContentType()
-                ){
-                    val transaction = transactions[it]
-                    if(transaction!=null){
-                        TransactionCard(
-                            transaction = transaction,
-                            onDeleteMenuClick = {
-                                viewModel.deleteTransaction(transaction)
-                            },
-                            onItemClick = {
-                                rootNavController.navigate(
-                                    Routs.AddTransactionRout(transaction.id, isPersonTransaction = true)
-                                )
+                    key = {index->
+                        when (val uiModel = transactions[index]){
+                            is TransactionUiModel.Header -> {"Header_${uiModel.dateString}"}
+                            is TransactionUiModel.TransactionItem -> {"Tx_${uiModel.transaction.id}"}
+                            null -> {"Placeholder_$index"}
+                        }
+                    }
+                ){index->
+                    when(val uiModel = transactions[index]){
+                        is TransactionUiModel.Header -> {
+                            Text(
+                                text = uiModel.dateString,
+                                fontSize = 13.sp,
+                                color = Color.Gray,
+                                fontFamily = alata_reguler
+                            )
+                        }
+                        is TransactionUiModel.TransactionItem -> {
+                            TransactionCard(
+                                transaction = uiModel.transaction,
+                                onDeleteMenuClick = {
+                                    viewModel.deleteTransaction(uiModel.transaction)
+                                },
+                                onItemClick = {
+                                    rootNavController.navigate(
+                                        Routs.AddTransactionRout(uiModel.transaction.id, isPersonTransaction = true)
+                                    )
+                                }
+                            )
+                        }
+                        null -> {
+                            Box(modifier=Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                                EmptyBox()
                             }
-                        )
-                    }else{
-                        Box(modifier=Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-                            EmptyBox()
                         }
                     }
                 }
