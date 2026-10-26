@@ -37,8 +37,8 @@ fun PersonScreen(
     val transactions = viewModel.transactionToPerson.collectAsLazyPagingItems()
 
     val loadState =transactions.loadState
-    when{
-        loadState.refresh is LoadState.Loading && transactions.itemCount == 0 -> {
+    when (loadState.refresh) {
+        is LoadState.Loading if transactions.itemCount == 0 -> {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -46,7 +46,8 @@ fun PersonScreen(
                 CircularProgressIndicator()
             }
         }
-        loadState.refresh is LoadState.Error && transactions.itemCount == 0 -> {
+
+        is LoadState.Error if transactions.itemCount == 0 -> {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -59,12 +60,14 @@ fun PersonScreen(
                 }
             }
         }
-        loadState.refresh is LoadState.NotLoading&& transactions.itemCount == 0 -> {
+
+        is LoadState.NotLoading if transactions.itemCount == 0 -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-               EmptyBox()
+                EmptyBox()
             }
         }
-        else->{
+
+        else -> {
             LazyColumn(
                 modifier=Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 100.dp, top = 4.dp),

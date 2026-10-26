@@ -1,4 +1,4 @@
-package com.rohitchauhan.spendmate.data.local
+package com.rohitchauhan.spendmate.data.room
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

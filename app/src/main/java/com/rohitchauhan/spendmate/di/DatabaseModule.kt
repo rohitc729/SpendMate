@@ -2,8 +2,8 @@ package com.rohitchauhan.spendmate.di
 
 import android.content.Context
 import androidx.room.Room
-import com.rohitchauhan.spendmate.data.local.TransactionDAO
-import com.rohitchauhan.spendmate.data.local.TransactionDatabase
+import com.rohitchauhan.spendmate.data.room.TransactionDAO
+import com.rohitchauhan.spendmate.data.room.TransactionDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -22,7 +22,7 @@ fun EmptyBox() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(painter = painterResource(R.drawable.empty),contentDescription="empty", modifier = Modifier.size(300.dp))
+        Image(painter = painterResource(R.drawable.empty),contentDescription="empty", modifier = Modifier.size(280.dp))
         Text("No Transactions yet!", fontSize = 28.sp, fontFamily = alata_reguler)
         Spacer(Modifier.height(8.dp))
         Text("Your transaction will appear hear.\nones you add it will show here", textAlign = TextAlign.Center, fontFamily = alata_reguler)

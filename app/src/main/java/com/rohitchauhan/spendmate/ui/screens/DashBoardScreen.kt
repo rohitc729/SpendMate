@@ -2,15 +2,19 @@ package com.rohitchauhan.spendmate.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowLeft
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.MoreVert
@@ -35,10 +39,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.rohitchauhan.spendmate.R
@@ -60,8 +67,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashBoardScreen(
-    onSettingClick:()-> Unit,
-    onAddTransaction:(Boolean)->Unit,
+    onSettingClick: () -> Unit,
+    onAddTransaction: (Boolean) -> Unit,
     rootNavController: NavHostController
 ) {
     var isMoreMenuExpanded by rememberSaveable { mutableStateOf(false) }
@@ -80,11 +87,11 @@ fun DashBoardScreen(
     )
     val scope = rememberCoroutineScope()
 
-    val personScreenVM : PersonScreenVM = hiltViewModel()
-    val groupTransactionVM : GroupTransactionScreenVM = hiltViewModel()
+    val personScreenVM: PersonScreenVM = hiltViewModel()
+    val groupTransactionVM: GroupTransactionScreenVM = hiltViewModel()
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect {
-            searchMode=false
+            searchMode = false
         }
     }
     Scaffold(
@@ -103,26 +110,29 @@ fun DashBoardScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    if(searchMode){
-                        Box (
-                            modifier = Modifier.background(
-                                color = Color.White,
-                                shape = RoundedCornerShape(24.dp)
-                            )
+                    if (searchMode) {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    color = Color.White,
+                                    shape = RoundedCornerShape(24.dp)
+                                )
                                 .shadow(elevation = 4.dp, shape = RoundedCornerShape(24.dp))
-                        ){
+                        ) {
                             MyTextField(
                                 value = searchText,
                                 onValueChange = {
                                     searchText = it
-                                    when(pagerState.currentPage){
-                                        0-> {
+                                    when (pagerState.currentPage) {
+                                        0 -> {
                                             dashBoardViewModel.onSearchQueryChanged(it)
                                         }
-                                       1->{
-                                           groupTransactionVM.onSearchQueryChanged(it)
+
+                                        1 -> {
+                                            groupTransactionVM.onSearchQueryChanged(it)
                                         }
-                                        2->{
+
+                                        2 -> {
                                             personScreenVM.onSearchQueryChanged(it)
                                         }
                                     }
@@ -134,16 +144,16 @@ fun DashBoardScreen(
                                 containerColor = Color.White,
                                 shape = RoundedCornerShape(12.dp),
                                 leadingIcon = {
-                                    Icon(Icons.Default.Search, contentDescription =null)
+                                    Icon(Icons.Default.Search, contentDescription = null)
                                 }
                             )
                         }
-                    }else {
+                    } else {
                         Text("Expense tracker", fontFamily = alata_reguler)
                     }
                 },
                 actions = {
-                    if(!searchMode) {
+                    if (!searchMode) {
                         IconButton(
                             onClick = {
                                 searchMode = true
@@ -180,39 +190,52 @@ fun DashBoardScreen(
                                 )
                             }
                         }
-                    }else{
+                    } else {
                         IconButton(
                             onClick = {
-                                searchMode=false
-                                searchText=""
+                                searchMode = false
+                                searchText = ""
                             }
                         ) {
-                            Icon(imageVector = Icons.Default.Cancel, contentDescription = "cancel search")
+                            Icon(
+                                imageVector = Icons.Default.Cancel,
+                                contentDescription = "cancel search"
+                            )
                         }
                     }
                 }
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick={
-                    when(pagerState.currentPage){
-                        0,2->{
+            ExtendedFloatingActionButton(
+                onClick = {
+                    when (pagerState.currentPage) {
+                        0, 2 -> {
                             onAddTransaction(
-                                pagerState.currentPage==2
+                                pagerState.currentPage == 2
                             )
                         }
-                        1->{
+
+                        1 -> {
                             rootNavController.navigate(Routs.AddGroupTransactionScreen(0))
                         }
                     }
 
                 },
+                text = {
+                    Text("Add", fontFamily = alata_reguler,color=Color.White)
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "add transaction icon",
+                        tint = Color.White
+                    )
+                },
                 shape = CircleShape,
                 containerColor = appColor
-            ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "add transaction icon", tint = Color.White)
-            }
+            )
+
         },
     ) { paddingValues ->
         HorizontalPager(
@@ -222,9 +245,13 @@ fun DashBoardScreen(
                 .padding(paddingValues)
         ) { page ->
             when (page) {
-                0 -> AllTransactionsScreen(dashBoardViewModel,rootNavController)
-                1 -> GroupTransactionsScreen(viewModel =groupTransactionVM,rootNavController=rootNavController)
-                2 -> PersonScreen(rootNavController=rootNavController, viewModel = personScreenVM)
+                0 -> AllTransactionsScreen(dashBoardViewModel, rootNavController)
+                1 -> GroupTransactionsScreen(
+                    viewModel = groupTransactionVM,
+                    rootNavController = rootNavController
+                )
+
+                2 -> PersonScreen(rootNavController = rootNavController, viewModel = personScreenVM)
             }
         }
     }

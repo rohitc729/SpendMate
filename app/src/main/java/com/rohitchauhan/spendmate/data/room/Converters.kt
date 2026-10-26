@@ -1,7 +1,6 @@
-package com.rohitchauhan.spendmate.data.local
+package com.rohitchauhan.spendmate.data.room
 
 import androidx.room.TypeConverter
-import androidx.room.TypeConverters
 import com.rohitchauhan.spendmate.domain.model.TransactionType
 
 class Converters {

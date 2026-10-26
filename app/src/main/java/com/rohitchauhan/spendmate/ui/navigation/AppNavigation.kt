@@ -17,7 +17,7 @@ fun AppNavigation() {
         composable < Routs.DashBoardRout>{
             DashBoardScreen(
                 onSettingClick = {
-
+                    rootNavController.navigate(Routs.SettingRout)
                 },
                 onAddTransaction = {forPersonTransaction:Boolean->
                     rootNavController.navigate(Routs.AddTransactionRout(transactionId = 0, isPersonTransaction = forPersonTransaction))
@@ -43,7 +43,10 @@ fun AppNavigation() {
             )
         }
         composable < Routs.SettingRout>{
-            SettingScreen()
+            SettingScreen(
+                onUploadClick = {},
+                onDownloadClick = {}
+            )
         }
     }
 }
