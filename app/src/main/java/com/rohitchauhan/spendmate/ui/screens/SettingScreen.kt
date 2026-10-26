@@ -46,7 +46,6 @@ fun SettingScreen(
     onUploadClick:()-> Unit,
     onDownloadClick:()-> Unit
 ) {
-    val context = LocalContext.current
     val viewModel : SettingScreenVM = hiltViewModel()
     val logInState = viewModel.loginState.collectAsStateWithLifecycle()
     val createAccountState = viewModel.createAccountState.collectAsStateWithLifecycle()
@@ -86,19 +85,20 @@ fun SettingScreen(
             }
             if(isLoggedIn){
                 if(hasPendingUploads){
-                    NotUploadedMessage(viewModel,context)
+                    NotUploadedMessage(viewModel)
                 }else{
                     UploadedMessage(viewModel)
                 }
             }else{
-                NotLoggedInMessage(viewModel,context)
+                NotLoggedInMessage(viewModel)
             }
         }
     }
 }
 
 @Composable
-fun NotUploadedMessage(viewModel: SettingScreenVM,context: Context) {
+fun NotUploadedMessage(viewModel: SettingScreenVM) {
+    val context = LocalContext.current
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ){
@@ -167,7 +167,8 @@ fun NotUploadedMessage(viewModel: SettingScreenVM,context: Context) {
 }
 
 @Composable
-fun NotLoggedInMessage(viewModel: SettingScreenVM,context:Context) {
+fun NotLoggedInMessage(viewModel: SettingScreenVM) {
+    val context = LocalContext.current
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ){

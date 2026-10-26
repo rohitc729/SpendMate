@@ -149,7 +149,7 @@ fun DashBoardScreen(
                             )
                         }
                     } else {
-                        Text("Expense tracker", fontFamily = alata_reguler)
+                        Text("Spendmate", fontFamily = alata_reguler)
                     }
                 },
                 actions = {
