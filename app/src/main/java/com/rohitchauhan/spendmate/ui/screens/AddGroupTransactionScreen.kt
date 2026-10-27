@@ -31,7 +31,6 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,9 +48,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rohitchauhan.spendmate.components.MyTextField
-import com.rohitchauhan.spendmate.domain.model.GroupTransactionModel
+import com.rohitchauhan.spendmate.domain.model.TransactionModel
 import com.rohitchauhan.spendmate.domain.model.TransactionType
 import com.rohitchauhan.spendmate.ui.theme.alata_reguler
 import com.rohitchauhan.spendmate.ui.theme.appColor
@@ -78,7 +76,7 @@ fun AddGroupTransactionScreen(
     val viewModel : GroupTransactionScreenVM= hiltViewModel()
 
 
-    var initialGroupTransaction by remember { mutableStateOf<GroupTransactionModel?>(null) }
+    var initialGroupTransaction by remember { mutableStateOf<TransactionModel?>(null) }
     LaunchedEffect(transactionId) {
         if(transactionId!=0){
            val gt =  viewModel.getGroupTransactionById(transactionId)
@@ -309,7 +307,7 @@ fun AddGroupTransactionScreen(
                     val amount = amountText.toDoubleOrNull()?:0.0
                     if(amount>0 && totalNoOfPersonText.isNotEmpty()){
                         isSaving = true
-                        val newGroupTransaction= GroupTransactionModel(
+                        val newGroupTransaction= TransactionModel(
                             id=transactionId,
                             type = TransactionType.Expense,
                             amount =amount,
@@ -319,7 +317,8 @@ fun AddGroupTransactionScreen(
                             icon = selectedCategory.emoji,
                             title = titleText,
                             message = messageText,
-                            timeStamp = System.currentTimeMillis()
+                            timeStamp = System.currentTimeMillis(),
+                            isGroupTransaction = true,
                         )
                         viewModel.saveGroupTransaction(newGroupTransaction)
                         onBackClick()

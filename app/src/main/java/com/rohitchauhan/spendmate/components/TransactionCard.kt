@@ -71,17 +71,47 @@ fun TransactionCard(
                 .padding(start = 10.dp)
                 .weight(1f)
         ) {
-            Text(
-                transaction.personName.ifEmpty { transaction.title.ifEmpty { transaction.category } },
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                fontFamily = alata_reguler
-            )
-            Row(verticalAlignment = Alignment.CenterVertically){
-            Text(transaction.category, fontSize = 12.sp, color = Color.Gray, fontFamily = alata_reguler)
-                VerticalDivider(thickness = 1.dp, modifier = Modifier.height(16.dp).padding(horizontal = 4.dp))
-                Text(formattedDate, fontSize = 12.sp, color = Color.Gray, fontFamily = alata_reguler)
+            val personText =
+                if (transaction.personName == null) transaction.category else transaction.personName.ifEmpty { transaction.title.ifEmpty { transaction.category } }
+            val perPersonAmountText =
+                if (transaction.isGroupTransaction) "${transaction.perPersonAmount}/${transaction.personCount}" else null
+            Row {
+                Text(
+                    text = personText,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontFamily = alata_reguler
+                )
+                if (perPersonAmountText != null)
+                    Text(
+                        text = perPersonAmountText,
+                        fontSize = 12.sp,
+                        fontFamily = alata_reguler,
+                        color = Color.Gray,
+                        modifier = Modifier.padding(start = 4.dp)
+                    )
+            }
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    transaction.category,
+                    fontSize = 12.sp,
+                    color = Color.Gray,
+                    fontFamily = alata_reguler
+                )
+                VerticalDivider(
+                    thickness = 1.dp,
+                    modifier = Modifier
+                        .height(16.dp)
+                        .padding(horizontal = 4.dp)
+                )
+                Text(
+                    formattedDate,
+                    fontSize = 12.sp,
+                    color = Color.Gray,
+                    fontFamily = alata_reguler
+                )
             }
         }
         Text(

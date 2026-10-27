@@ -395,7 +395,8 @@ fun AddTransactionScreen(
                                 title = noteText.value.ifBlank { selectedCategory },
                                 message = noteText.value.ifBlank { selectedCategory },
                                 timeStamp = selectedDateInMillis,
-                                icon = if(isPersonTransaction) "\uD83E\uDDD1\uD83C\uDFFB" else selectedCategoryEmoji
+                                icon = if(isPersonTransaction) "\uD83E\uDDD1\uD83C\uDFFB" else selectedCategoryEmoji,
+                                isGroupTransaction = false
                             )
                             viewModel.insertTransaction(newTransaction)
                             onBackPress()

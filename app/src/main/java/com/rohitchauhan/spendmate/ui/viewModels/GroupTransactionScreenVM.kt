@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import androidx.paging.filter
-import com.rohitchauhan.spendmate.domain.model.GroupTransactionModel
 import com.rohitchauhan.spendmate.domain.model.TransactionModel
 import com.rohitchauhan.spendmate.domain.repo.Repo
 import com.rohitchauhan.spendmate.utils.getTimeRange
@@ -31,21 +30,15 @@ class GroupTransactionScreenVM @Inject constructor(
         _searchQuery.value = value
     }
 
-//    val groupTransactions =
-//        combine(_searchQuery, repo.getAllGroupTransactions()) { query, item ->
-//            item.filter {
-//                 query.isBlank() || it.title.contains(query,ignoreCase=true)
-//            }
-//        }.cachedIn(viewModelScope)
-
     private val _selectedMonthForSummary = MutableStateFlow("this month")
     val selectedMonthForSummary = _selectedMonthForSummary.asStateFlow()
-    fun onMonthChangedForSummary(month: String){
-        _selectedMonthForSummary.value=month
+    fun onMonthChangedForSummary(month: String) {
+        _selectedMonthForSummary.value = month
     }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val totalIncome: StateFlow<Long> = _selectedMonthForSummary
-        .flatMapLatest { month->
+        .flatMapLatest { month ->
             val timeRange = getTimeRange(month)
             repo.getTotalGroupIncome(timeRange)
         }.stateIn(
@@ -53,8 +46,9 @@ class GroupTransactionScreenVM @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = 0L
         )
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    val totalExpense : StateFlow<Long> = _selectedMonthForSummary
+    val totalExpense: StateFlow<Long> = _selectedMonthForSummary
         .flatMapLatest {
             val timeRange = getTimeRange(it)
             repo.getTotalGroupExpense(timeRange)
@@ -63,29 +57,35 @@ class GroupTransactionScreenVM @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = 0L
         )
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val groupTransactions = _searchQuery.flatMapLatest { query ->
-        repo.getAllGroupTransactions()
+        repo.getAllTransactionsPageByPage()
             .map { pagingData ->
                 pagingData.filter { item ->
-                    query.isBlank() ||
-                            item.title.contains(query, ignoreCase = true) ||
-                            item.category.contains(query, ignoreCase = true) ||
-                            item.message.contains(query, ignoreCase = true)
+                    item.isGroupTransaction &&
+                    (
+                       query.isBlank() ||
+                       item.title.contains(query, ignoreCase = true) ||
+                       item.category.contains(query, ignoreCase = true) ||
+                       item.message.contains(query, ignoreCase = true)
+                   )
                 }
             }
     }.cachedIn(viewModelScope)
 
-    fun saveGroupTransaction(groupTransaction: GroupTransactionModel) {
+    fun saveGroupTransaction(groupTransaction: TransactionModel) {
         viewModelScope.launch {
-            repo.saveGroupTransaction(groupTransaction)
+            repo.insertTransaction(groupTransaction)
         }
     }
 
-    fun deleteTransaction(transactionId: Int) {
+    fun deleteTransaction(transactionId: TransactionModel) {
         viewModelScope.launch {
-            repo.deleteGroupTransaction(transactionId)
+            repo.deleteTransaction(transactionId)
         }
     }
-    suspend fun getGroupTransactionById(transactionId:Int): GroupTransactionModel? = repo.getGroupTransactionById(transactionId)
+
+    suspend fun getGroupTransactionById(transactionId: Int): TransactionModel? =
+        repo.getTransactionById(transactionId)
 }

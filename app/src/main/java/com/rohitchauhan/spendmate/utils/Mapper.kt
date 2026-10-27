@@ -1,9 +1,7 @@
 package com.rohitchauhan.spendmate.utils
 
 import com.rohitchauhan.spendmate.data.firebase.TransactionDTO
-import com.rohitchauhan.spendmate.data.room.GroupTransactionEntity
 import com.rohitchauhan.spendmate.data.room.TransactionEntity
-import com.rohitchauhan.spendmate.domain.model.GroupTransactionModel
 import com.rohitchauhan.spendmate.domain.model.TransactionModel
 import com.rohitchauhan.spendmate.domain.model.TransactionType
 
@@ -18,7 +16,10 @@ fun TransactionModel.toTransactionEntity():TransactionEntity{
         title = this.title,
         message = this.message,
         timeStamp = this.timeStamp,
-        icon = this.icon
+        icon = this.icon,
+        perPersonAmount = this.perPersonAmount,
+        personCount = this.personCount,
+        isGroupTransaction = this.isGroupTransaction
     )
 }
 fun TransactionEntity.toTransactionModel():TransactionModel{
@@ -31,7 +32,10 @@ fun TransactionEntity.toTransactionModel():TransactionModel{
         title = this.title,
         message = this.message,
         timeStamp = this.timeStamp,
-        icon = this.icon
+        icon = this.icon,
+        perPersonAmount = this.perPersonAmount,
+        personCount = this.personCount,
+        isGroupTransaction = this.isGroupTransaction
     )
 }
 fun List<TransactionModel>.toTransactionEntityList(): List<TransactionEntity>{
@@ -44,34 +48,8 @@ fun List<TransactionEntity>.toTransactionModelList():List<TransactionModel>{
         it.toTransactionModel()
     }
 }
-fun GroupTransactionModel.toGroupTransactionEntity(): GroupTransactionEntity{
-    return GroupTransactionEntity(
-        id = this.id,
-        type = this.type,
-        amount = this.amount,
-        perPersonAmount = this.perPersonAmount,
-        personCount = this.personCount,
-        category = this.category,
-        icon = this.icon,
-        title = this.title,
-        message = this.message,
-        timeStamp = this.timeStamp,
-    )
-}
-fun GroupTransactionEntity.toGroupTransactionModel(): GroupTransactionModel{
-    return GroupTransactionModel(
-        id = this.id,
-        type = this.type,
-        amount = this.amount,
-        perPersonAmount = this.perPersonAmount,
-        personCount = this.personCount,
-        category = this.category,
-        icon = this.icon,
-        title = this.title,
-        message = this.message,
-        timeStamp = this.timeStamp
-    )
-}
+
+
 fun TransactionModel.toTransactionDTO(): TransactionDTO{
     return TransactionDTO(
         id = this.id,
@@ -82,7 +60,10 @@ fun TransactionModel.toTransactionDTO(): TransactionDTO{
         title = this.title,
         message = this.message,
         timeStamp = this.timeStamp,
-        icon = this.icon
+        icon = this.icon,
+        perPersonAmount = this.perPersonAmount,
+        personCount = this.personCount,
+        isGroupTransaction = this.isGroupTransaction
     )
 }
 fun TransactionDTO.toTransactionModel(): TransactionModel{
@@ -98,6 +79,9 @@ fun TransactionDTO.toTransactionModel(): TransactionModel{
         message = this.message?:"",
         timeStamp = this.timeStamp?:0L,
         icon = this.icon?:"",
+        perPersonAmount = this.perPersonAmount,
+        personCount = this.personCount,
+        isGroupTransaction = this.isGroupTransaction
     )
 }
 fun List<TransactionModel>.toTransactionDTOList(): List<TransactionDTO>{

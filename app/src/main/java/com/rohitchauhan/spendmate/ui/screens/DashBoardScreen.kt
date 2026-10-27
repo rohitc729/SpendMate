@@ -1,5 +1,6 @@
 package com.rohitchauhan.spendmate.ui.screens
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,6 +40,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.toString
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -47,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.rohitchauhan.spendmate.R
 import com.rohitchauhan.spendmate.components.MyBottomBar
@@ -89,6 +92,8 @@ fun DashBoardScreen(
 
     val personScreenVM: PersonScreenVM = hiltViewModel()
     val groupTransactionVM: GroupTransactionScreenVM = hiltViewModel()
+    val totalAmount = dashBoardViewModel.totalAmount.collectAsStateWithLifecycle().value
+
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect {
             searchMode = false
@@ -102,7 +107,9 @@ fun DashBoardScreen(
                 currentTabIndex = pagerState.currentPage,
                 onTabSelected = { index ->
                     scope.launch {
-                        pagerState.animateScrollToPage(index)
+                        pagerState.animateScrollToPage(
+                            page=index,
+                        )
                     }
                 }
             )
@@ -149,7 +156,17 @@ fun DashBoardScreen(
                             )
                         }
                     } else {
-                        Text("Spendmate", fontFamily = alata_reguler)
+                        Row {
+                            Text(
+                                "Total Amount: ",
+                                fontFamily = alata_reguler,
+                            )
+                            Text(
+                                totalAmount.toString(),
+                                fontFamily = alata_reguler,
+                                color =  if(totalAmount>=0) Color(0xff4caf50) else Color(0xffff5252)
+                            )
+                        }
                     }
                 },
                 actions = {
@@ -223,7 +240,7 @@ fun DashBoardScreen(
 
                 },
                 text = {
-                    Text("Add", fontFamily = alata_reguler,color=Color.White)
+                    Text("Add", fontFamily = alata_reguler, color = Color.White)
                 },
                 icon = {
                     Icon(

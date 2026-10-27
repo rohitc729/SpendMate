@@ -1,33 +1,23 @@
 package com.rohitchauhan.spendmate.data.repoimpl
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.getValue
 import com.rohitchauhan.spendmate.data.firebase.TransactionDTO
 import com.rohitchauhan.spendmate.data.pref.SharedPrefService
 import com.rohitchauhan.spendmate.data.room.TransactionDAO
-import com.rohitchauhan.spendmate.domain.model.GroupTransactionModel
 import com.rohitchauhan.spendmate.domain.model.TransactionModel
 import com.rohitchauhan.spendmate.domain.repo.Repo
 import com.rohitchauhan.spendmate.utils.ResultState
-import com.rohitchauhan.spendmate.utils.toGroupTransactionEntity
-import com.rohitchauhan.spendmate.utils.toGroupTransactionModel
 import com.rohitchauhan.spendmate.utils.toTransactionDTOList
 import com.rohitchauhan.spendmate.utils.toTransactionEntity
 import com.rohitchauhan.spendmate.utils.toTransactionEntityList
 import com.rohitchauhan.spendmate.utils.toTransactionModel
 import com.rohitchauhan.spendmate.utils.toTransactionModelList
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
@@ -43,7 +33,7 @@ class RepoImpl @Inject constructor(
         return transactionDAO.getAllTransactionList().toTransactionModelList()
     }
 
-    override fun getAllTransactions(): Flow<PagingData<TransactionModel>> {
+    override fun getAllTransactionsPageByPage(): Flow<PagingData<TransactionModel>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 20,
@@ -51,7 +41,7 @@ class RepoImpl @Inject constructor(
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {
-                transactionDAO.getAllTransactions()
+                transactionDAO.getAllTransactionsPageByPage()
             }
         ).flow.map {pagingData ->
             pagingData.map {
@@ -77,10 +67,6 @@ class RepoImpl @Inject constructor(
         return transactionDAO.getTransactionById(transactionId)?.toTransactionModel()
     }
 
-    override suspend fun getGroupTransactionById(transactionId: Int): GroupTransactionModel? {
-        return transactionDAO.getGroupTransactionById(transactionId)?.toGroupTransactionModel()
-    }
-
     override suspend fun deleteAllTransactions() {
         transactionDAO.deleteAllTransactions()
     }
@@ -98,31 +84,6 @@ class RepoImpl @Inject constructor(
 
     override fun getTotalGroupExpense(timeRange:Pair<Long, Long>): Flow<Long> {
         return transactionDAO.getTotalGroupExpenseSince(timeRange.first,timeRange.second)
-    }
-
-    override suspend fun saveGroupTransaction(groupTransaction: GroupTransactionModel) {
-        transactionDAO.saveGroupTransaction(groupTransaction.toGroupTransactionEntity())
-    }
-
-    override fun getAllGroupTransactions(): Flow<PagingData<GroupTransactionModel>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                prefetchDistance = 5,
-                enablePlaceholders = false
-            ),
-            pagingSourceFactory = {
-                transactionDAO.getAllGroupTransactions()
-            }
-        ).flow.map { pagingData ->
-            pagingData.map {
-                it.toGroupTransactionModel()
-            }
-        }
-    }
-
-    override suspend fun deleteGroupTransaction(transactionId: Int) {
-       transactionDAO.deleteGroupTransaction(transactionId)
     }
 
     //Authentication

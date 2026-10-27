@@ -11,5 +11,8 @@ data class TransactionDTO(
     val title: String? = null,
     val icon: String? = null,
     val message: String? = null,
-    val timeStamp: Long? = null
+    val timeStamp: Long? = null,
+    val perPersonAmount: Double? = null,
+    val personCount: Int? = null,
+    val isGroupTransaction: Boolean = false
 )

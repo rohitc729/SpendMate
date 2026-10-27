@@ -1,29 +1,14 @@
 package com.rohitchauhan.spendmate.ui.screens.subscreens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,13 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
@@ -46,7 +25,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.rohitchauhan.spendmate.components.EmptyBox
-import com.rohitchauhan.spendmate.components.TransactionCard2
+import com.rohitchauhan.spendmate.components.TransactionCard
 import com.rohitchauhan.spendmate.ui.navigation.Routs
 import com.rohitchauhan.spendmate.ui.theme.alata_reguler
 import com.rohitchauhan.spendmate.ui.viewModels.GroupTransactionScreenVM
@@ -56,91 +35,13 @@ import com.rohitchauhan.spendmate.ui.viewModels.GroupTransactionScreenVM
 fun GroupTransactionsScreen(viewModel: GroupTransactionScreenVM,rootNavController: NavHostController) {
 
     val transactions = viewModel.groupTransactions.collectAsLazyPagingItems()
-    var showBottomSheet by remember { mutableStateOf(false) }
     val totalIncome = viewModel.totalIncome.collectAsStateWithLifecycle().value
     val totalExpense = viewModel.totalExpense.collectAsStateWithLifecycle().value
     val totalAmount = totalIncome - totalExpense
     var showMonthDropDownMenu by remember { mutableStateOf(false) }
     val selectedMonth by viewModel.selectedMonthForSummary.collectAsStateWithLifecycle()
-    if(showBottomSheet){
-        ModalBottomSheet(
-            onDismissRequest = {showBottomSheet=false}
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Box {
-                    Row {
-                        Text(selectedMonth, modifier = Modifier.clickable {
-                            showMonthDropDownMenu = true
-                        }, fontFamily = alata_reguler)
-                        Spacer(Modifier.width(4.dp))
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowLeft, contentDescription = null, modifier = Modifier.rotate(-90f))
-                    }
-                    DropdownMenu(
-                        expanded = showMonthDropDownMenu,
-                        onDismissRequest = { showMonthDropDownMenu = false },
-                    ) {
-                        listOf("this month", "last month", "this year", "last year").forEach {
-                            DropdownMenuItem(
-                                text = { Text(it, fontFamily = alata_reguler) },
-                                onClick = {
-                                    showMonthDropDownMenu = false
-                                    viewModel.onMonthChangedForSummary(it)
-                                }
-                            )
-                        }
-                    }
-                }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Row {
-                        Box(
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(color = Color(0xff4caf50))
-                                .weight(1f),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("Total income:\n$totalIncome", textAlign = TextAlign.Center, fontFamily = alata_reguler)
-                        }
 
-                        Box(
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(color = Color(0xffff5252))
-                                .weight(1f), contentAlignment = Alignment.Center
-                        ) {
-                            Text("total expenses:\n$totalExpense", textAlign = TextAlign.Center, fontFamily = alata_reguler)
-                        }
-                    }
-                    Text("total amount: $totalAmount", fontFamily = alata_reguler)
-                }
-            }
-        }
-    }
     Column (modifier = Modifier.fillMaxSize()){
-        Row (modifier = Modifier.align(Alignment.End)){
-            Text("\uD83D\uDCDD")
-            Text(
-                text = "Summary",
-                modifier = Modifier.clickable {
-                    showBottomSheet = true
-                }
-                    .padding(end = 16.dp),
-                fontFamily = alata_reguler,
-                textDecoration = TextDecoration.Underline
-            )
-        }
-        Spacer(Modifier.height(10.dp   ))
         val loadState = transactions.loadState
         when (loadState.refresh)
         {
@@ -182,7 +83,7 @@ fun GroupTransactionsScreen(viewModel: GroupTransactionScreenVM,rootNavControlle
                     ) {
                         val transaction = transactions[it]
                         if (transaction != null) {
-                            TransactionCard2(
+                            TransactionCard(
                                 transaction,
                                 onItemClick = {
                                     rootNavController.navigate(
@@ -192,7 +93,7 @@ fun GroupTransactionsScreen(viewModel: GroupTransactionScreenVM,rootNavControlle
                                     )
                                 },
                                 onDeleteMenuClick = {
-                                    viewModel.deleteTransaction(transaction.id)
+                                    viewModel.deleteTransaction(transaction)
                                 }
                             )
                         }

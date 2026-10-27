@@ -30,13 +30,13 @@ class PersonScreenVM @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val transactionToPerson = _searchQuery
         .flatMapLatest { query ->
-            repo.getAllTransactions()
+            repo.getAllTransactionsPageByPage()
                 .map { pagingData ->
                     pagingData.filter { transactionModel ->
-                        val hasPersonName = transactionModel.personName.isNotBlank()
-                        val mathchesQuery = query.isBlank() || transactionModel.personName.contains(query, ignoreCase = true) ||
+                        val hasPersonName = !transactionModel.personName.isNullOrBlank()
+                        val matchesQuery = query.isBlank() || transactionModel.personName?.contains(query, ignoreCase = true)==true ||
                                 transactionModel.title.contains(query, ignoreCase = true)
-                        hasPersonName&&mathchesQuery
+                        hasPersonName&&matchesQuery
                     }
                 }
                 .cachedIn(viewModelScope)

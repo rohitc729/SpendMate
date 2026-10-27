@@ -1,5 +1,6 @@
 package com.rohitchauhan.spendmate.ui.viewModels
 
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -64,18 +65,28 @@ class DashBoardScreenVM @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = 0L
         )
+    val totalAmount = combine(totalExpense,totalIncome){expense,income->
+        income-expense
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = 0L
+    )
     @OptIn(ExperimentalCoroutinesApi::class)
     val pagedTransactions = combine(_searchQuery, _selectedFilterCategory) { query, category ->
         Pair(query, category)
     }.flatMapLatest { (query, filterCategory) ->
-        repo.getAllTransactions()
+        repo.getAllTransactionsPageByPage()
             .map { pagingData ->
                 pagingData.filter { transaction ->
-                    val matchesQuery = query.isBlank() ||
+                    val matchesQuery =
+                        !transaction.isGroupTransaction&&
+                        (
+                        query.isBlank() ||
                         transaction.title.contains(query, ignoreCase = true) ||
-                        transaction.personName.contains(query, ignoreCase = true) ||
+                        transaction.personName?.contains(query, ignoreCase = true) ==true||
                         transaction.category.contains(query, ignoreCase = true)
-
+                        )
                     val matchesCategory = filterCategory.name.isBlank() ||
                         filterCategory.name.equals("All Transactions", ignoreCase = true) ||
                         filterCategory.name.equals("All", ignoreCase = true) ||
