@@ -21,13 +21,8 @@ class SharedPrefService @Inject constructor(
     fun getLastSyncTimeStamp(): Long {
         return prefs.getLong(KEY_LAST_SYNC_TIMESTAMP,0L)
     }
-    fun setAnyThingToUpload(value: Boolean){
-        prefs.edit{putBoolean(KEY_IS_ANYTHING_TO_UPLOAD,value)}
-    }
-    fun isAnyThingToUpload(): Boolean{
-        return prefs.getBoolean(KEY_IS_ANYTHING_TO_UPLOAD,false)
-    }
+
     fun clear(){
-        prefs.edit().clear().apply()
+        prefs.edit { clear() }
     }
 }

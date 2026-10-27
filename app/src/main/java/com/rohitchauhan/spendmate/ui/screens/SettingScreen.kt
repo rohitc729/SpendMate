@@ -3,6 +3,7 @@ package com.rohitchauhan.spendmate.ui.screens
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,23 +36,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import androidx.room.util.TableInfo
 import com.rohitchauhan.spendmate.R
+import com.rohitchauhan.spendmate.ui.navigation.Routs
 import com.rohitchauhan.spendmate.ui.theme.alata_reguler
 import com.rohitchauhan.spendmate.ui.theme.appColor
 import com.rohitchauhan.spendmate.ui.viewModels.SettingScreenVM
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.logging.SimpleFormatter
 
 @Composable
 fun SettingScreen(
-    onUploadClick:()-> Unit,
-    onDownloadClick:()-> Unit
+    onUploadClick: () -> Unit,
+    onDownloadClick: () -> Unit,
+    rootNavController: NavHostController
 ) {
-    val viewModel : SettingScreenVM = hiltViewModel()
+    val viewModel: SettingScreenVM = hiltViewModel()
     val logInState = viewModel.loginState.collectAsStateWithLifecycle()
     val createAccountState = viewModel.createAccountState.collectAsStateWithLifecycle()
     val uploadState = viewModel.uploadState.collectAsStateWithLifecycle()
     val downLoadState = viewModel.downloadState.collectAsStateWithLifecycle()
-    val hasPendingUploads = viewModel.hasPendingUploads.collectAsStateWithLifecycle().value
     val isLoggedIn = viewModel.isLoggedIn()
 
     Scaffold(
@@ -83,14 +92,18 @@ fun SettingScreen(
                     fontFamily = alata_reguler
                 )
             }
-            if(isLoggedIn){
-                if(hasPendingUploads){
-                    NotUploadedMessage(viewModel)
-                }else{
-                    UploadedMessage(viewModel)
-                }
-            }else{
-                NotLoggedInMessage(viewModel)
+            if (isLoggedIn) {
+                NotUploadedMessage(viewModel)
+            } else {
+                NotLoggedInMessage(
+                    viewModel = viewModel,
+                    onCrateAccountClick = {
+                        rootNavController.navigate(Routs.SignUpScreen)
+                    },
+                    onSignInClick = {
+                        rootNavController.navigate(Routs.SignInScreen)
+                    }
+                )
             }
         }
     }
@@ -98,10 +111,13 @@ fun SettingScreen(
 
 @Composable
 fun NotUploadedMessage(viewModel: SettingScreenVM) {
+    val dataFormatter = remember { SimpleDateFormat("dd MMM yyyy hh:mm:ss", Locale.getDefault()) }
+    val lastSync = viewModel.lastSyncTime.collectAsStateWithLifecycle().value
+    val formatedDate = if(lastSync==0L) "Not Synced" else dataFormatter.format(lastSync)
     val context = LocalContext.current
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
         Image(
             painter = painterResource(R.drawable.cloud),
             contentDescription = "cloud image",
@@ -122,14 +138,24 @@ fun NotUploadedMessage(viewModel: SettingScreenVM) {
             fontFamily = alata_reguler,
             color = Color.Gray
         )
-        Spacer(Modifier.height(20.dp))
+        Text(
+            "last sync: $formatedDate",
+            fontFamily = alata_reguler,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp, horizontal = 30.dp)
+        )
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
             Button(
                 onClick = {
-                    if(viewModel.isLoggedIn()){
+                    if (viewModel.isLoggedIn()) {
                         viewModel.uploadTransactions()
-                    }else{
-                        Toast.makeText(context, "login/signup to upload transactions", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "login/signup to upload transactions",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -141,77 +167,11 @@ fun NotUploadedMessage(viewModel: SettingScreenVM) {
                 )
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(painter = painterResource(R.drawable.upload), contentDescription = "upload image", tint = Color.White)
-                    Text(" Upload to Cloud", fontSize = 12.sp)
-                }
-            }
-            Button(
-                onClick = {
-                   viewModel.downloadTransactions()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White
-                ),
-                elevation = ButtonDefaults.buttonElevation(
-                    4.dp
-                ),
-                shape = RoundedCornerShape(24.dp),
-            ) {
-                Row (verticalAlignment = Alignment.CenterVertically){
-                    Image(painter = painterResource(R.drawable.download_icon), contentDescription = "download image")
-                    Text("  Download from Cloud", color = appColor, fontSize = 12.sp)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun NotLoggedInMessage(viewModel: SettingScreenVM) {
-    val context = LocalContext.current
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        Image(
-            painter = painterResource(R.drawable.cloud),
-            contentDescription = "cloud image",
-            modifier = Modifier.size(250.dp)
-        )
-        Text(
-            "Not uploaded to Cloud",
-            fontSize = 24.sp,
-            textAlign = TextAlign.Center,
-            fontFamily = alata_reguler,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Text(
-            "by uploading all the transaction data uploaded to cloud and you can access/view all the data even your app will unInstall",
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 32.dp),
-            fontSize = 13.sp,
-            fontFamily = alata_reguler,
-            color = Color.Gray
-        )
-        Spacer(Modifier.height(20.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            Button(
-                onClick = {
-                    if(viewModel.isLoggedIn()){
-                        viewModel.uploadTransactions()
-                    }else{
-                        Toast.makeText(context, "login/signup to upload transactions", Toast.LENGTH_SHORT).show()
-                    }
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = appColor
-                ),
-                shape = RoundedCornerShape(24.dp),
-                elevation = ButtonDefaults.buttonElevation(
-                    4.dp
-                )
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(painter = painterResource(R.drawable.upload), contentDescription = "upload image", tint = Color.White)
+                    Icon(
+                        painter = painterResource(R.drawable.upload),
+                        contentDescription = "upload image",
+                        tint = Color.White
+                    )
                     Text(" Upload to Cloud", fontSize = 12.sp)
                 }
             }
@@ -227,8 +187,11 @@ fun NotLoggedInMessage(viewModel: SettingScreenVM) {
                 ),
                 shape = RoundedCornerShape(24.dp),
             ) {
-                Row (verticalAlignment = Alignment.CenterVertically){
-                    Image(painter = painterResource(R.drawable.download_icon), contentDescription = "download image")
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(R.drawable.download_icon),
+                        contentDescription = "download image"
+                    )
                     Text("  Download from Cloud", color = appColor, fontSize = 12.sp)
                 }
             }
@@ -237,6 +200,64 @@ fun NotLoggedInMessage(viewModel: SettingScreenVM) {
 }
 
 @Composable
-fun UploadedMessage(viewModel: SettingScreenVM) {
-
+fun NotLoggedInMessage(
+    viewModel: SettingScreenVM,
+    onCrateAccountClick: () -> Unit,
+    onSignInClick: () -> Unit
+) {
+    val context = LocalContext.current
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(R.drawable.notloggedin),
+            contentDescription = "cloud image",
+            modifier = Modifier.size(250.dp)
+        )
+        Text(
+            "You're not logged in",
+            fontSize = 24.sp,
+            textAlign = TextAlign.Center,
+            fontFamily = alata_reguler,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Text(
+            "It looks like you haven't created an account yet.\nLog in or sign up to continue",
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 32.dp),
+            fontSize = 13.sp,
+            fontFamily = alata_reguler,
+            color = Color.Gray
+        )
+        Spacer(Modifier.height(20.dp))
+        Button(
+            onClick = {
+                onCrateAccountClick()
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = appColor
+            ),
+            shape = RoundedCornerShape(24.dp),
+            elevation = ButtonDefaults.buttonElevation(
+                4.dp
+            )
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(R.drawable.add_user),
+                    contentDescription = "add-user image",
+                    tint = Color.White
+                )
+                Text("Create Account", fontSize = 12.sp)
+            }
+        }
+        Text(
+            "Already have an account? Log In",
+            fontSize = 12.sp,
+            fontFamily = alata_reguler,
+            color = appColor,
+            modifier = Modifier.clickable {
+                onSignInClick()
+            })
+    }
 }

@@ -118,7 +118,7 @@ fun AllTransactionsScreen(viewModel: DashBoardScreenVM, rootNavController: NavHo
                                 .weight(1f),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Total income:\n$totalIncome", textAlign = TextAlign.Center)
+                            Text("Total income:\n$totalIncome", textAlign = TextAlign.Center,fontFamily = alata_reguler)
                         }
 
                         Box(
@@ -128,10 +128,13 @@ fun AllTransactionsScreen(viewModel: DashBoardScreenVM, rootNavController: NavHo
                                 .background(color = Color(0xffff5252))
                                 .weight(1f), contentAlignment = Alignment.Center
                         ) {
-                            Text("total expenses:\n$totalExpense", textAlign = TextAlign.Center)
+                            Text("total expenses:\n$totalExpense", textAlign = TextAlign.Center,fontFamily = alata_reguler)
                         }
                     }
-                    Text("total amount: $totalAmount")
+                    Row (verticalAlignment = Alignment.CenterVertically){
+                        Text("total amount: ", fontFamily = alata_reguler)
+                        Text("$totalAmount", fontFamily = alata_reguler, color = if(totalAmount>=0) Color(0xff4caf50) else Color(0xffff5252))
+                    }
                 }
             }
         }

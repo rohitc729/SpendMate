@@ -16,4 +16,10 @@ sealed class Routs{
     ):Routs()
     @Serializable
     data object SettingRout:Routs()
+    @Serializable
+    data object SignUpScreen:Routs()
+    @Serializable
+    data object SignInScreen:Routs()
+    @Serializable
+    data object ProfileScreen:Routs()
 }

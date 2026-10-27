@@ -8,7 +8,10 @@ import androidx.navigation.toRoute
 import com.rohitchauhan.spendmate.ui.screens.AddGroupTransactionScreen
 import com.rohitchauhan.spendmate.ui.screens.AddTransactionScreen
 import com.rohitchauhan.spendmate.ui.screens.DashBoardScreen
+import com.rohitchauhan.spendmate.ui.screens.ProfileScreen
 import com.rohitchauhan.spendmate.ui.screens.SettingScreen
+import com.rohitchauhan.spendmate.ui.screens.SignInScreen
+import com.rohitchauhan.spendmate.ui.screens.SignUpScreen
 
 @Composable
 fun AppNavigation() {
@@ -21,6 +24,9 @@ fun AppNavigation() {
                 },
                 onAddTransaction = {forPersonTransaction:Boolean->
                     rootNavController.navigate(Routs.AddTransactionRout(transactionId = 0, isPersonTransaction = forPersonTransaction))
+                },
+                onProfileClick = {
+                    rootNavController.navigate(Routs.ProfileScreen)
                 },
                 rootNavController = rootNavController
             )
@@ -45,7 +51,30 @@ fun AppNavigation() {
         composable < Routs.SettingRout>{
             SettingScreen(
                 onUploadClick = {},
-                onDownloadClick = {}
+                onDownloadClick = {},
+                rootNavController=rootNavController
+            )
+        }
+        composable < Routs.SignUpScreen>{
+            SignUpScreen(
+                onLoginClick = {
+                    rootNavController.navigate(Routs.SignInScreen)
+                },
+                goBack = {
+                    rootNavController.popBackStack()
+                }
+            )
+        }
+        composable < Routs.SignInScreen>{
+            SignInScreen(
+                onSignUpClick = {
+                    rootNavController.navigate(Routs.SignUpScreen)
+                }
+            )
+        }
+        composable < Routs.ProfileScreen>{
+            ProfileScreen(
+
             )
         }
     }

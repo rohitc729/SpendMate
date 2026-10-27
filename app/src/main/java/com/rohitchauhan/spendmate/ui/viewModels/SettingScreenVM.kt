@@ -34,9 +34,6 @@ class SettingScreenVM @Inject constructor(
     private val _lastSyncTime = MutableStateFlow(sharedPrefService.getLastSyncTimeStamp())
     val lastSyncTime: StateFlow<Long> = _lastSyncTime.asStateFlow()
 
-    private val _hasPendingUploads = MutableStateFlow(sharedPrefService.isAnyThingToUpload())
-    val hasPendingUploads: StateFlow<Boolean> = _hasPendingUploads.asStateFlow()
-
     fun isLoggedIn(): Boolean {
         return firebaseAuth.currentUser != null
     }
@@ -64,7 +61,6 @@ class SettingScreenVM @Inject constructor(
                 if (it is ResultState.Success) {
                     _downloadState.value = ResultState.Success(it.data)
                     _lastSyncTime.value = sharedPrefService.getLastSyncTimeStamp()
-                    _hasPendingUploads.value = sharedPrefService.isAnyThingToUpload()
                     if (it.data.isNotEmpty()) {
                         repo.deleteAllTransactions()
                         repo.insertAllTransactions(it.data)
@@ -82,7 +78,6 @@ class SettingScreenVM @Inject constructor(
                     _uploadState.value = it
                     if(it is ResultState.Success){
                         _lastSyncTime.value = sharedPrefService.getLastSyncTimeStamp()
-                        _hasPendingUploads.value = sharedPrefService.isAnyThingToUpload()
                     }
                 }
         }

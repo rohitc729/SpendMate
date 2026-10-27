@@ -52,7 +52,6 @@ class RepoImpl @Inject constructor(
 
     override suspend fun insertTransaction(transactionModel: TransactionModel) {
         transactionDAO.insertTransaction(transactionModel.toTransactionEntity())
-        sharedPrefService.setAnyThingToUpload(true)
     }
 
     override suspend fun insertAllTransactions(transactionList: List<TransactionModel>) {
@@ -126,7 +125,6 @@ class RepoImpl @Inject constructor(
             val transactionRef = firebaseDatabase.reference.child("transactions").child(userId)
             transactionRef.setValue(transactionDto).await()
             sharedPrefService.saveLastSyncTimeStamp()
-            sharedPrefService.setAnyThingToUpload(false)
             emit(ResultState.Success(true))
         }catch (e: Exception){
             emit(ResultState.Error(e.localizedMessage?:"something went wrong"))
@@ -147,7 +145,6 @@ class RepoImpl @Inject constructor(
             val transactions = snapshot.children.mapNotNull {
                 it.getValue(TransactionDTO::class.java)?.toTransactionModel()
             }
-            sharedPrefService.setAnyThingToUpload(false)
             sharedPrefService.saveLastSyncTimeStamp()
            emit(ResultState.Success(transactions))
         }catch (e: Exception){

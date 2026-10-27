@@ -72,6 +72,7 @@ import kotlinx.coroutines.launch
 fun DashBoardScreen(
     onSettingClick: () -> Unit,
     onAddTransaction: (Boolean) -> Unit,
+    onProfileClick: () -> Unit,
     rootNavController: NavHostController
 ) {
     var isMoreMenuExpanded by rememberSaveable { mutableStateOf(false) }
@@ -97,6 +98,8 @@ fun DashBoardScreen(
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect {
             searchMode = false
+            searchText = ""
+            dashBoardViewModel.onSearchQueryChanged("")
         }
     }
     Scaffold(
@@ -156,7 +159,7 @@ fun DashBoardScreen(
                             )
                         }
                     } else {
-                        Row {
+                        Row (verticalAlignment = Alignment.CenterVertically){
                             Text(
                                 "Total Amount: ",
                                 fontFamily = alata_reguler,
@@ -203,6 +206,13 @@ fun DashBoardScreen(
                                     onClick = {
                                         isMoreMenuExpanded = false
                                         onSettingClick()
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Profile") },
+                                    onClick = {
+                                        isMoreMenuExpanded = false
+                                        onProfileClick()
                                     }
                                 )
                             }
@@ -267,7 +277,6 @@ fun DashBoardScreen(
                     viewModel = groupTransactionVM,
                     rootNavController = rootNavController
                 )
-
                 2 -> PersonScreen(rootNavController = rootNavController, viewModel = personScreenVM)
             }
         }

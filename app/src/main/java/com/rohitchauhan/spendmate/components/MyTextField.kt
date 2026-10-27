@@ -69,7 +69,8 @@ fun MyTextField(
                         Text(
                             text = placeHolder,
                             fontSize = 14.sp,
-                            fontFamily = fontFamily
+                            fontFamily = fontFamily,
+                            color=Color.Gray
                         )
                     },
                     leadingIcon = leadingIcon,
