@@ -75,7 +75,7 @@ fun TransactionCard(
                 if (transaction.personName == null) transaction.category else transaction.personName.ifEmpty { transaction.title.ifEmpty { transaction.category } }
             val perPersonAmountText =
                 if (transaction.isGroupTransaction) "${transaction.perPersonAmount}/${transaction.personCount}" else null
-            Row {
+            Row (verticalAlignment = Alignment.CenterVertically){
                 Text(
                     text = personText,
                     fontWeight = FontWeight.SemiBold,

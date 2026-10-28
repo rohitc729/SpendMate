@@ -20,7 +20,7 @@ class SignUpScreenVM @Inject constructor(
     private val repo: Repo,
     private val createAccountUserCase: CreateAccountUserCase
 ): ViewModel() {
-    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    private val _uiEvent = MutableSharedFlow<SignUpUiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
 
     private val _signUpUiState = MutableStateFlow(SignUpUiState())
@@ -43,19 +43,19 @@ class SignUpScreenVM @Inject constructor(
                 confirmPassword = _signUpUiState.value.confirmPassword
             ).collect { result ->
                 when(result) {
-                    is ResultState.Error -> _uiEvent.emit(UiEvent.ShowToast(result.message))
+                    is ResultState.Error -> _uiEvent.emit(SignUpUiEvent.ShowToast(result.message))
                     ResultState.Idle -> {}
-                    ResultState.Loading -> _uiEvent.emit(UiEvent.Loading)
-                    is ResultState.Success -> _uiEvent.emit(UiEvent.NavigateBack)
+                    ResultState.Loading -> _uiEvent.emit(SignUpUiEvent.Loading)
+                    is ResultState.Success -> _uiEvent.emit(SignUpUiEvent.NavigateBack)
                 }
             }
         }
     }
 }
-sealed class UiEvent {
-    data class ShowToast(val message: String) : UiEvent()
-    object Loading: UiEvent()
-    object NavigateBack: UiEvent()
+sealed class SignUpUiEvent {
+    data class ShowToast(val message: String) : SignUpUiEvent()
+    object Loading: SignUpUiEvent()
+    object NavigateBack: SignUpUiEvent()
 }
 data class SignUpUiState(
     val email:String = "",

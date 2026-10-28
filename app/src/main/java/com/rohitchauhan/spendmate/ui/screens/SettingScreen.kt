@@ -18,11 +18,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,8 +46,11 @@ import com.rohitchauhan.spendmate.ui.theme.alata_reguler
 import com.rohitchauhan.spendmate.ui.theme.appColor
 import com.rohitchauhan.spendmate.ui.viewModels.SettingScreenVM
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.rohitchauhan.spendmate.utils.ResultState
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.logging.SimpleFormatter
@@ -57,10 +62,6 @@ fun SettingScreen(
     rootNavController: NavHostController
 ) {
     val viewModel: SettingScreenVM = hiltViewModel()
-    val logInState = viewModel.loginState.collectAsStateWithLifecycle()
-    val createAccountState = viewModel.createAccountState.collectAsStateWithLifecycle()
-    val uploadState = viewModel.uploadState.collectAsStateWithLifecycle()
-    val downLoadState = viewModel.downloadState.collectAsStateWithLifecycle()
     val isLoggedIn = viewModel.isLoggedIn()
 
     Scaffold(
@@ -115,6 +116,45 @@ fun NotUploadedMessage(viewModel: SettingScreenVM) {
     val lastSync = viewModel.lastSyncTime.collectAsStateWithLifecycle().value
     val formatedDate = if(lastSync==0L) "Not Synced" else dataFormatter.format(lastSync)
     val context = LocalContext.current
+    var isDownloading by  remember { mutableStateOf(false) }
+    var isUploading by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.uploadState.collect { result->
+            when(result){
+                is ResultState.Error ->{
+                    Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
+                    isUploading=false
+                }
+                ResultState.Idle -> {}
+                ResultState.Loading -> {
+                    isUploading=true
+                }
+                is ResultState.Success-> {
+                    isUploading=false
+                    Toast.makeText(context, "Upload success", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+    LaunchedEffect(Unit) {
+        viewModel.downloadState.collect { result->
+            when(result){
+                is ResultState.Error ->{
+                    Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
+                    isDownloading=false
+                }
+                ResultState.Idle -> {}
+                ResultState.Loading -> {
+                    isDownloading=true
+                }
+                is ResultState.Success-> {
+                    isDownloading=false
+                    Toast.makeText(context, "Download success", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -167,11 +207,18 @@ fun NotUploadedMessage(viewModel: SettingScreenVM) {
                 )
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painter = painterResource(R.drawable.upload),
-                        contentDescription = "upload image",
-                        tint = Color.White
-                    )
+                    if(isUploading){
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }else{
+                        Icon(
+                            painter = painterResource(R.drawable.upload),
+                            contentDescription = "upload image",
+                            tint = Color.White
+                        )
+                    }
+
                     Text(" Upload to Cloud", fontSize = 12.sp)
                 }
             }
@@ -188,10 +235,16 @@ fun NotUploadedMessage(viewModel: SettingScreenVM) {
                 shape = RoundedCornerShape(24.dp),
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(R.drawable.download_icon),
-                        contentDescription = "download image"
-                    )
+                    if(isDownloading){
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }else{
+                        Image(
+                            painter = painterResource(R.drawable.download_icon),
+                            contentDescription = "download image"
+                        )
+                    }
                     Text("  Download from Cloud", color = appColor, fontSize = 12.sp)
                 }
             }

@@ -1,5 +1,6 @@
 package com.rohitchauhan.spendmate.data.firebase
 
+import com.google.firebase.database.PropertyName
 import com.rohitchauhan.spendmate.domain.model.TransactionType
 
 data class TransactionDTO(
@@ -14,5 +15,7 @@ data class TransactionDTO(
     val timeStamp: Long? = null,
     val perPersonAmount: Double? = null,
     val personCount: Int? = null,
+    @get:PropertyName("isGroupTransaction")
+    @field:PropertyName("isGroupTransaction")
     val isGroupTransaction: Boolean = false
 )

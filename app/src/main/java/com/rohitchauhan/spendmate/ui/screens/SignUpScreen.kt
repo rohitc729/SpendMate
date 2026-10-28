@@ -21,8 +21,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalRippleConfiguration
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,7 +38,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -50,9 +47,7 @@ import com.rohitchauhan.spendmate.components.MyTextField
 import com.rohitchauhan.spendmate.ui.theme.alata_reguler
 import com.rohitchauhan.spendmate.ui.theme.appColor
 import com.rohitchauhan.spendmate.ui.viewModels.SignUpScreenVM
-import com.rohitchauhan.spendmate.ui.viewModels.UiEvent
-import com.rohitchauhan.spendmate.utils.ResultState
-import kotlin.math.sign
+import com.rohitchauhan.spendmate.ui.viewModels.SignUpUiEvent
 
 @Composable
 fun SignUpScreen(
@@ -71,13 +66,13 @@ fun SignUpScreen(
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collect { event ->
             when(event){
-                UiEvent.Loading -> {
+                SignUpUiEvent.Loading -> {
                     isLoading=true
                 }
-                UiEvent.NavigateBack -> {
+                SignUpUiEvent.NavigateBack -> {
                     goBack()
                 }
-                is UiEvent.ShowToast -> {
+                is SignUpUiEvent.ShowToast -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
             }

@@ -69,6 +69,9 @@ fun AppNavigation() {
             SignInScreen(
                 onSignUpClick = {
                     rootNavController.navigate(Routs.SignUpScreen)
+                },
+                gotoBack = {
+                    rootNavController.popBackStack()
                 }
             )
         }
