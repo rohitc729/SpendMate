@@ -137,6 +137,7 @@ fun AddGroupTransactionScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .padding(horizontal = 16.dp)
                 .verticalScroll(rememberScrollState())
                 .imePadding()
         ) {
@@ -144,7 +145,6 @@ fun AddGroupTransactionScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
                     .shadow(4.dp, shape = RoundedCornerShape(24.dp))
                     .background(Color.White, RoundedCornerShape(24.dp))
                     .border(BorderStroke(1.5.dp, Color.White), RoundedCornerShape(24.dp))
@@ -175,8 +175,7 @@ fun AddGroupTransactionScreen(
             }
             Spacer(Modifier.height(16.dp))
             FlowRow(
-                modifier = Modifier.fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             )
@@ -228,7 +227,6 @@ fun AddGroupTransactionScreen(
                 placeHolder = "Note / Title (e.g. Swiggy Lunch)",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
                     .shadow(4.dp, RoundedCornerShape(16.dp))
                     .background(Color.White, RoundedCornerShape(16.dp))
             )
@@ -241,7 +239,6 @@ fun AddGroupTransactionScreen(
                 placeHolder = "Message / Description (Optional)",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
                     .shadow(4.dp, RoundedCornerShape(16.dp))
                     .background(Color.White, RoundedCornerShape(16.dp))
             )
@@ -254,7 +251,6 @@ fun AddGroupTransactionScreen(
                 placeHolder = "Total no of Persons(1 or 2 ..)",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
                     .shadow(4.dp, RoundedCornerShape(16.dp))
                     .background(Color.White, RoundedCornerShape(16.dp)),
                 keyboardOptions = KeyboardOptions(
@@ -265,7 +261,6 @@ fun AddGroupTransactionScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
                     .shadow(4.dp, RoundedCornerShape(16.dp))
                     .background(Color.White, RoundedCornerShape(16.dp))
                     .padding(vertical = 12.dp, horizontal = 16.dp),
@@ -325,7 +320,6 @@ fun AddGroupTransactionScreen(
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
-                    .padding(horizontal = 16.dp)
                     .height(54.dp),
                 shape=RoundedCornerShape(24.dp),
                 elevation = ButtonDefaults.buttonElevation(4.dp),

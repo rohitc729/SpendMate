@@ -40,6 +40,9 @@ class SettingScreenVM @Inject constructor(
         return firebaseAuth.currentUser != null
     }
 
+    fun isAnythingToSync(): Boolean{
+        return sharedPrefService.isAnythingToSync()
+    }
     fun createAccount(email: String, password: String) {
         viewModelScope.launch {
             repo.createAccount(email, password).collect {

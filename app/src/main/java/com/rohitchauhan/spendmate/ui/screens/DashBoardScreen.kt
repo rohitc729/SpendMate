@@ -72,7 +72,6 @@ import kotlinx.coroutines.launch
 fun DashBoardScreen(
     onSettingClick: () -> Unit,
     onAddTransaction: (Boolean) -> Unit,
-    onProfileClick: () -> Unit,
     rootNavController: NavHostController
 ) {
     var isMoreMenuExpanded by rememberSaveable { mutableStateOf(false) }
@@ -206,13 +205,6 @@ fun DashBoardScreen(
                                     onClick = {
                                         isMoreMenuExpanded = false
                                         onSettingClick()
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    text = { Text("Profile") },
-                                    onClick = {
-                                        isMoreMenuExpanded = false
-                                        onProfileClick()
                                     }
                                 )
                             }

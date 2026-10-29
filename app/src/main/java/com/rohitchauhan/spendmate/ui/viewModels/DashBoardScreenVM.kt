@@ -80,13 +80,11 @@ class DashBoardScreenVM @Inject constructor(
             .map { pagingData ->
                 pagingData.filter { transaction ->
                     val matchesQuery =
-                        !transaction.isGroupTransaction&&
-                        (
                         query.isBlank() ||
                         transaction.title.contains(query, ignoreCase = true) ||
                         transaction.personName?.contains(query, ignoreCase = true) ==true||
                         transaction.category.contains(query, ignoreCase = true)
-                        )
+
                     val matchesCategory = filterCategory.name.isBlank() ||
                         filterCategory.name.equals("All Transactions", ignoreCase = true) ||
                         filterCategory.name.equals("All", ignoreCase = true) ||

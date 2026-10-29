@@ -20,6 +20,4 @@ sealed class Routs{
     data object SignUpScreen:Routs()
     @Serializable
     data object SignInScreen:Routs()
-    @Serializable
-    data object ProfileScreen:Routs()
 }
